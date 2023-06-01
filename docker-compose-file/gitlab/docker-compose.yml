@@ -1,0 +1,25 @@
+version: "3.6"
+
+services:
+  gitlab:
+    restart: always
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab
+    # Address of the deployed server
+    hostname: host
+    ports:
+      - "8081:80"
+      - "443:443"
+      # If the default ssh port is disabled
+      - "222:22"
+    volumes:
+      - /var/docker_data/gitlab/config:/etc/gitlab
+      - /var/docker_data/gitlab/data:/var/opt/gitlab
+    environment:
+      TZ: Asia/Shanghai
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://deployed-host'
+        gitlab_rails['lfs_enabled'] = true
+        gitlab_rails['time_zone'] = 'Asia/Shanghai'
+        gitlab_rails['gitlab_shell_ssh_port'] = 222
+    shm_size: '256m'
